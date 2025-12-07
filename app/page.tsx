@@ -27,26 +27,37 @@ export default function Home() {
     <div className="bg-white text-gray-900">
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <BookOpen className="w-6 h-6 text-gray-900" />
-          <span className="text-xl font-bold text-gray-900">PeerView</span>
+        <div className="flex items-center justify-center gap-2">
+          <img src="/ArsPaper.svg" alt="ArsPaper Logo" className="w-14 h-14 text-gray-900" />
+          <span className="text-xl font-bold text-gray-900 leading-none">ArsPaper</span>
         </div>
-        <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-          Menu
-        </Button>
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
+      <section className="min-h-screen flex items-center justify-center px-4 py-20 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/library.jpg"
+            alt="Library background"
+            fill
+            className="object-cover blur-sm"
+            quality={80}
+          />
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
+        <div className="z-10 max-w-3xl mx-auto text-center space-y-8 bg-white p-10 rounded-4xl">
           <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 text-balance leading-tight">
             The Platform Where Research <span className="text-blue-600">Becomes Accessible</span>
           </h1>
           <p className="text-lg text-gray-600 text-balance max-w-2xl mx-auto leading-relaxed">
-             Research shouldn't be hidden. Join the waitlist for PeerView—where researchers discover, discuss,
+            Research shouldn't be hidden. Join the waitlist for ArsPaper—where researchers discover, discuss,
             and improve the science that matters.
           </p>
-          <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800 px-8 py-6 text-lg">
+          <Button 
+            size="lg" 
+            className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-[3000ms]"
+            onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+          >
             Join the Waitlist
           </Button>
         </div>
@@ -56,9 +67,9 @@ export default function Home() {
       <section className="px-4 py-20 max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6 text-balance">Why PeerView?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 text-balance">Why ArsPaper?</h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              Scientific research shouldn't be locked behind paywalls or hidden from the world. PeerView creates a
+              Research shouldn't be locked behind paywalls or hidden from the world. ArsPaper creates a
               vibrant community where researchers, academics, and curious minds connect, discuss, and collectively
               improve our understanding of the world.
             </p>
@@ -79,7 +90,7 @@ export default function Home() {
           <div className="h-96 rounded-2xl overflow-hidden border border-gray-200 bg-gradient-to-br from-blue-50 to-gray-50">
             <Image
               src="/research-papers-feed-interface.jpg"
-              alt="PeerView Research Feed"
+              alt="ArsPaper Research Feed"
               width={800}
               height={400}
               className="w-full h-full object-cover"
@@ -88,9 +99,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Who is PeerView For */}
+      {/* Who is ArsPaper For */}
       <section className="px-4 py-20 max-w-3xl mx-auto">
-        <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Who is PeerView For?</h2>
+        <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Who is ArsPaper For?</h2>
         <div className="grid md:grid-cols-2 gap-8">
           {[
             {
@@ -122,7 +133,7 @@ export default function Home() {
       {/* Why Choose Us */}
       <section className="px-4 py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Why Choose PeerView?</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Why Choose ArsPaper?</h2>
           <div className="space-y-6">
             {[
               {
@@ -209,9 +220,9 @@ export default function Home() {
       </section>
 
       {/* Waitlist Form Section */}
-      <section className="px-4 py-20 bg-gray-900 text-white">
+      <section className="px-4 py-20 bg-gray-900 text-white" id="waitlist">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-4xl font-bold mb-4 text-center text-balance">Be First to Access PeerView</h2>
+          <h2 className="text-4xl font-bold mb-4 text-center text-balance">Be First to Access ArsPaper</h2>
           <p className="text-gray-300 text-center mb-12">
             Join our waitlist to get early access and help shape the future of scientific research discovery.
           </p>
@@ -293,7 +304,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="px-4 py-12 bg-gray-50 border-t border-gray-200 text-center">
         <div className="max-w-3xl mx-auto">
-          <p className="text-gray-600 text-sm">© 2025 PeerView. All rights reserved.</p>
+          <p className="text-gray-600 text-sm">&copy; 2025 ArsPaper. All rights reserved.</p>
         </div>
       </footer>
     </div>
