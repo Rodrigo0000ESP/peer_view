@@ -8,28 +8,30 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "PeerView - Scientific Research Platform",
+  title: "ArsPaper - Knowledge Sharing Platform",
   description:
     "The platform where research becomes accessible. Discover, discuss, and improve PhD papers and scientific research.",
-  generator: "v0.app",
+  generator: "R Firm",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/ArsPaper.svg",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/ArsPaper.svg",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/ArsPaper.svg",
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/ArsPaper.svg",
   },
 }
+
+import { Toaster } from "@/components/ui/toaster"
 
 export default function RootLayout({
   children,
@@ -40,6 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased`}>
         {children}
+        <Toaster />
         <Analytics />
       </body>
     </html>

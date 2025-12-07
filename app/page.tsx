@@ -5,8 +5,12 @@ import Image from "next/image"
 import { BookOpen, MessageSquare, Zap, Users, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { sendWaitlistEmail } from "@/services/emailService"
+import { useToast } from "@/hooks/use-toast"
 
 export default function Home() {
+  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,13 +18,46 @@ export default function Home() {
     field: "",
     level: "Master",
     uploadPapers: "yes",
+    expectations: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Waitlist signup:", formData)
-    // Reset form
-    setFormData({ name: "", email: "", organization: "", field: "", level: "Master", uploadPapers: "yes" })
+    setIsSubmitting(true)
+
+    try {
+      const result = await sendWaitlistEmail(formData)
+
+      if (result.success) {
+        toast({
+          title: "Success!",
+          description: result.message,
+        })
+        setFormData({
+          name: "",
+          email: "",
+          organization: "",
+          field: "",
+          level: "Master",
+          uploadPapers: "yes",
+          expectations: "",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: result.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -40,13 +77,13 @@ export default function Home() {
             src="/library.jpg"
             alt="Library background"
             fill
-            className="object-cover blur-sm"
+            className="object-cover"
             quality={80}
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
-        <div className="z-10 max-w-3xl mx-auto text-center space-y-8 bg-white p-10 rounded-4xl">
-          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 text-balance leading-tight">
+        <div className="z-10 max-w-3xl mx-auto text-center space-y-8 bg-white/90 backdrop-blur-md p-6 md:p-10 rounded-3xl md:rounded-4xl shadow-2xl">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-balance leading-tight">
             The Platform Where Research <span className="text-blue-600">Becomes Accessible</span>
           </h1>
           <p className="text-lg text-gray-600 text-balance max-w-2xl mx-auto leading-relaxed">
@@ -64,21 +101,20 @@ export default function Home() {
       </section>
 
       {/* Platform Explanation */}
-      <section className="px-4 py-20 max-w-4xl mx-auto">
+      <section className="px-4 py-10 max-w-4xl mx-auto md:py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6 text-balance">Why ArsPaper?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 text-balance">What is ArsPaper?</h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              Research shouldn't be locked behind paywalls or hidden from the world. ArsPaper creates a
-              vibrant community where researchers, academics, and curious minds connect, discuss, and collectively
+              ArsPaper creates a vibrant community where researchers, academics, and curious minds connect, discuss, and collectively
               improve our understanding of the world.
             </p>
             <ul className="space-y-4">
               {[
                 "Discover breakthrough research in your field",
                 "Engage with verified researchers worldwide",
-                "Get AI-powered summaries of complex papers",
                 "Build your academic profile and reputation",
+                "Follow up on research you're interested in"
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
@@ -89,7 +125,7 @@ export default function Home() {
           </div>
           <div className="h-96 rounded-2xl overflow-hidden border border-gray-200 bg-gradient-to-br from-blue-50 to-gray-50">
             <Image
-              src="/research-papers-feed-interface.jpg"
+              src="/book.jpg"
               alt="ArsPaper Research Feed"
               width={800}
               height={400}
@@ -100,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Who is ArsPaper For */}
-      <section className="px-4 py-20 max-w-3xl mx-auto">
+      <section className="px-4 py-10 md:py-20 max-w-4xl mx-auto mb-10 md:mb-20">
         <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Who is ArsPaper For?</h2>
         <div className="grid md:grid-cols-2 gap-8">
           {[
@@ -118,8 +154,8 @@ export default function Home() {
               description: "Discover cutting-edge research to inform your work and stay ahead of innovation.",
             },
             {
-              title: "Science Enthusiasts",
-              description: "Explore groundbreaking discoveries and understand the science shaping our world.",
+              title: "Knowledge Enthusiasts",
+              description: "Explore groundbreaking discoveries and understand the what is shaping our world.",
             },
           ].map((audience, i) => (
             <div key={i} className="border border-gray-200 rounded-lg p-6">
@@ -130,77 +166,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="px-4 py-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-balance">Why Choose ArsPaper?</h2>
-          <div className="space-y-6">
-            {[
-              {
-                title: "Verified Community",
-                description:
-                  "All researchers are verified academics. No spam, no trolls—just genuine scientific discourse.",
-              },
-              {
-                title: "AI-Powered Insights",
-                description:
-                  "Understand complex papers instantly with AI-generated summaries covering methodology, findings, and implications.",
-              },
-              {
-                title: "Smart Discovery",
-                description:
-                  "Browse research and content that matches your interests in an intuitive interface. Save and organize your favorites.",
-              },
-              {
-                title: "Collaborative Discussion",
-                description:
-                  "Comment, debate, and improve papers together. Peer feedback helps strengthen the entire scientific ecosystem.",
-              },
-            ].map((feature, i) => (
-              <div key={i} className="border-l-4 border-blue-600 pl-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="px-4 py-20 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
+      {/* Why Choose ArsPaper? */}
+      <section className="px-4 py-10 bg-gray-50 pb-20 md:pb-40 md:py-20">
+        <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center text-balance">
-            Powerful Features for Modern Research
+            Why Choose ArsPaper?
           </h2>
           <p className="text-center text-gray-600 mb-16 text-lg">
-            Everything you need to engage with scientific research on a whole new level
+            The art of paper for everyone
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
             {[
               {
                 icon: CheckCircle2,
-                title: "Verified KYC Commenters",
+                title: "Verified Community",
                 description:
-                  "Know who you're discussing with. All commenters are verified researchers and academics, ensuring quality and credibility.",
+                  "All researchers are verified academics. No spam, no trolls—just genuine discourse and meaningful connections.",
               },
               {
                 icon: Zap,
-                title: "AI-Powered Summaries",
+                title: "AI-Powered Insights",
                 description:
-                  "Get instant summaries of complex papers. Understand key findings, methodology, and implications at a glance.",
+                  "Understand complex papers instantly with AI-generated summaries covering methodology, findings, and implications.",
               },
               {
                 icon: Users,
-                title: "Intuitive Discovery",
+                title: "Smart Discovery",
                 description:
-                  "Discover content tailored to your interests. Explore, save, and engage with research in a familiar interface.",
+                  "Browse research and content that matches your interests in an intuitive interface. Save and organize your favorites.",
               },
               {
                 icon: MessageSquare,
                 title: "Collaborative Discussion",
                 description:
-                  "Comment, discuss, and debate with fellow researchers. Improve papers through constructive peer feedback and insights.",
+                  "Comment, debate, and improve papers together. Peer feedback helps strengthen the entire ecosystem.",
               },
             ].map((feature, i) => {
               const Icon = feature.icon
@@ -230,7 +230,7 @@ export default function Home() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder="Full Name *"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors"
@@ -238,7 +238,7 @@ export default function Home() {
             />
             <input
               type="email"
-              placeholder="Email Address"
+              placeholder="Email Address *"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors"
@@ -246,14 +246,14 @@ export default function Home() {
             />
             <input
               type="text"
-              placeholder="University / Organization"
+              placeholder="University / Organization (Optional)"
               value={formData.organization}
               onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors"
             />
             <input
               type="text"
-              placeholder="Field of Study"
+              placeholder="Field of Study / Interest *"
               value={formData.field}
               onChange={(e) => setFormData({ ...formData, field: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors"
@@ -267,11 +267,13 @@ export default function Home() {
                   onChange={(e) => setFormData({ ...formData, level: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors"
                 >
-                  <option>Bachelor</option>
-                  <option>Master</option>
+                  <option>High School</option>
+                  <option>Bachelor's Degree</option>
+                  <option>Master's Degree</option>
                   <option>PhD</option>
                   <option>Postdoc</option>
                   <option>Industry</option>
+                  <option>Other</option>
                 </select>
               </div>
               <div>
@@ -286,14 +288,26 @@ export default function Home() {
                   <option value="maybe">Maybe Later</option>
                 </select>
               </div>
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-300 mb-2 block">
+                  What do you expect from ArsPaper? (Optional)
+                </label>
+                <textarea
+                  placeholder="Tell us what features or content you're looking for..."
+                  value={formData.expectations}
+                  onChange={(e) => setFormData({ ...formData, expectations: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:border-blue-500 focus:outline-none transition-colors h-32 resize-none"
+                />
+              </div>
             </div>
 
             <Button
               type="submit"
               size="lg"
               className="w-full bg-blue-600 text-white hover:bg-blue-700 py-3 text-lg font-semibold mt-6"
+              disabled={isSubmitting}
             >
-              Join the Waitlist
+              {isSubmitting ? "Joining..." : "Join the Waitlist"}
             </Button>
 
             <p className="text-center text-gray-400 text-sm pt-4">We respect your privacy. Unsubscribe at any time.</p>
