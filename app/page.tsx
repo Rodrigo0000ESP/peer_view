@@ -277,7 +277,7 @@ export default function Home() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-300 mb-2 block">Upload Your Papers?</label>
+                <label className="text-sm font-medium text-gray-300 mb-2 block">Would you like to upload your papers?</label>
                 <select
                   value={formData.uploadPapers}
                   onChange={(e) => setFormData({ ...formData, uploadPapers: e.target.value })}
@@ -310,7 +310,7 @@ export default function Home() {
               {isSubmitting ? "Joining..." : "Join the Waitlist"}
             </Button>
 
-            <p className="text-center text-gray-400 text-sm pt-4">We respect your privacy. Unsubscribe at any time.</p>
+            <p className="text-center text-gray-400 text-sm pt-4">We respect your privacy. We will not share your information with third parties or sell your data.</p>
           </form>
         </div>
       </section>
